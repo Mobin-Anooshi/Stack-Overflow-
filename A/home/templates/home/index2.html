@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+
+
+<div class="row">
+{% for post in posts %}
+    <div class="col-sm-6 mb-3 mb-sm-0">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.user.username }}<p class="text-end">Time</p></h5>
+          <p class="card-text">{{ post.body|truncatewords:8 }}</p>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-primary">more ...</a>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+</div>
+{% endblock content %}

@@ -24,7 +24,6 @@ SECRET_KEY = 'django-insecure-(f*a2=5#u(^j)3+6#@5er3(2-34inmoxfrw4!kn)15cnlh-i-c
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 
@@ -129,3 +128,17 @@ LOGIN_URL = '/account/login/'
 
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
                            "account.authenticate.EmailBackend",] 
+
+
+
+
+
+#Google account
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "mobinanooshi2003@gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = "poaehviecjrhamvc"
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "VRAH WEBSITE"

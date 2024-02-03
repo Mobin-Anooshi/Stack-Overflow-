@@ -5,8 +5,10 @@
 
     <div class="card">
         {% for post in posts %}
-            <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8 }}</a>
-
+            <p>Owner : {{ post.user.username }}</p>
+            <a style="display:inline" href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8 }}</a>
+            <p class="text-end">Time</p><br/><hr/>
+            
         {% endfor %}
 
     </div>
