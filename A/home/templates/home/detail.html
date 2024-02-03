@@ -6,6 +6,19 @@
 {% endif %}
 <h2 class="text-center"><a href="{% url 'account:user_profile' post.user.id %}">{{ post.user }}</a></h2>
 <h4 class="text-end">{{ post.updated|date:"Y-M" }}</h4>
-<p>{{ post.body }}</p>
+<p>{{ post.body }}</p><hr/>
+
+
+
+{% for comment in comments %}
+<div class="card bg-dark text-white">
+    <p class="card-header">{{ comment.user }}|{{ comment.created|timesince }}</p>
+    <p class="card-body">{{ comment.body }}</p>
+</div>
+
+{% endfor %}
+
+
+
 
 {% endblock content %}  
