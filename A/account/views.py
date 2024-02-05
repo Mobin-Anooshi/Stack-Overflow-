@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from account.forms import UserRegistretionForm , UserLoginForm
+from account.forms import UserRegistretionForm , UserLoginForm , EditProfile
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate , login , logout
@@ -79,9 +79,10 @@ class UserProfileView(LoginRequiredMixin,View):
         user = User.objects.get(pk = user_id)
         posts = user.posts.all()
         relation = Relation.objects.filter(from_user=request.user , to_user=user)
+        relations = Relation.objects.filter(to_user=user)
         if relation.exists():
             is_following = True
-        return render(request , 'account/profile.html',{'user':user,'posts':posts,'is_following':is_following})
+        return render(request , 'account/profile.html',{'user':user,'posts':posts,'is_following':is_following,'relations':relations})
     
 
 class UserPasswordResetView(auth_views.PasswordResetView):
@@ -124,3 +125,17 @@ class UserUnfollowView(LoginRequiredMixin , View):
             messages.error(request , 'you not follow this user')
 
         return redirect('account:user_profile',user.id)
+
+class EditeUser(LoginRequiredMixin , View):
+    form_class = EditProfile
+    def get(self,request):
+        form = self.form_class(instance=request.user.profile ,initial={'email':request.user.email})
+        return render(request , 'account/editprofile.html',{'form':form})
+    def post(self,request):
+        form= self.form_class(request.POST , instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            request.user.email = form.cleaned_data['email']
+            request.user.save()
+            messages.success(request , 'profile edited successfully','success')
+        return redirect('account:user_profile',request.user.id)

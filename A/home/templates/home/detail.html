@@ -1,23 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
+
+
 {% if request.user.id == post.user.id %}
 <a href='{% url "home:post_delete" post.id  %}' class="btn btn-danger">Delete</a>
 <a href='{% url "home:post_update" post.id  %}' class="btn btn-info">Update</a>
 {% endif %}
+
+
 <h2 class="text-center"><a href="{% url 'account:user_profile' post.user.id %}">{{ post.user }}</a></h2>
 <h4 class="text-end">{{ post.updated|date:"Y-M" }}</h4>
-<p>{{ post.body }}</p><hr/>
+<p>{{ post.body }}</p><br/>
 
+
+{% if request.user.is_authenticated %}
+    <div class="w-100 d-flex justify-content-between">
+        <a class="btn btn-primary  " href="{% url 'home:post_comment' post.id %}">comment</a>
+    <a class="btn btn-{% if not can_like %}outline-{% endif %}danger col-md-3" href="{% url 'home:post_like' post.id %}">
+    {{ post.likesCount }} like
+    {% if not can_like %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+        </svg>
+    {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+        </svg>
+    {% endif %}
+    </a>
+    </div><hr/>
+        
+{% else %}
+    <p class="alert alert-danger"> only loged in user can comment</p>
+{% endif %}
 
 
 {% for comment in comments %}
-<div class="card bg-dark text-white">
-    <p class="card-header">{{ comment.user }}|{{ comment.created|timesince }}</p>
-    <p class="card-body">{{ comment.body }}</p>
-</div>
-
+    <div class="card bg-dark text-white">
+        <p class="card-header">{{ comment.user }}|{{ comment.created|timesince }}</p>
+        <p class="card-body">{{ comment.body }}</p>
+        <a class="btn btn-primary m-3" href="{% url 'home:user_replycomment' post.id comment.id %}">reply</a>
+        {% for reply in comment.rcomment.all %}
+            <p class="bg-black m-3 p-2 ">{{ reply.user }} <br/>{{ reply.body }}</p>
+        {% endfor %}
+    </div>
+<br/><hr/>
 {% endfor %}
-
+<br/>
 
 
 

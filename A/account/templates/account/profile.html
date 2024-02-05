@@ -2,28 +2,63 @@
 {% block content %}
 <h2 class='text-center'>{{ user.username }}</h2>
 
-
+<div class="w-100 d-flex justify-content-between">
 {% if request.user.id == user.id %}
-<a href="{% url 'home:post_create' %}" class="btn btn-primary">new post</a>
+  <a href="{% url 'home:post_create' %}" class="btn btn-warning">new post</a>
+  <a href="{% url 'account:edit_user' %}" class="btn btn-info">Edit Profile</a>
 {% endif %}
-
-
 
 {% if request.user.id != user.id  and not is_following %}
-<a class="btn btn-primary" href="{% url 'account:user_follow' user.id %}" >Follow</a>
+<a class="btn btn-primary col-md-2" href="{% url 'account:user_follow' user.id %}" >Follow</a>
 
 {% elif request.user.id != user.id  and is_following %}
-<a class="btn btn-primary" href="{% url 'account:user_unfollow' user.id %}" >Unfollow</a>
+<a class="btn btn-primary col-md-2" href="{% url 'account:user_unfollow' user.id %}" >Unfollow</a>
 
 {% endif %}
 
-
-
-<div class="card">
-    {% for post in posts %}
-        <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8 }}</a>
-
-    {% endfor %}
-
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Followers
+</button>
 </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Followers</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      {% for rel in relations %} 
+      <div class="modal-body">
+        {{ rel.from_user }}
+      </div>
+      {% empty %}
+        No follower
+      {% endfor %}
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<hr/>
+
+
+{% for post in posts %}
+      <div class="card w-50">
+        <div class="card-body">
+          <small class="card-title">{{ post.created|timesince }}</small>
+          <h5 class="card-text">{{ post.body|truncatewords:8 }}</h5>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-primary">More...</a>
+        </div>
+      </div>
+      <br/>
+{% endfor %}
+
+
 {% endblock content %}
+
+
+
